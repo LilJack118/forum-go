@@ -1,0 +1,38 @@
+version: "1"
+
+services:
+  api:
+    build:
+      # path to directory containing Dockerfile
+      context: ./api
+    # map local port 8000 to port 8000 in container
+    ports:
+      - "80:80"
+    # map directory from system to docker container
+    volumes:
+      # - "./api:/api"
+      - ./api/:/api
+      - ./api/go.mod:/api/go.mod
+    depends_on:
+      - db
+    networks:
+      - db-network
+  db:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - dev-db-data:/var/lib/mongodb/data
+    # initial environment variables
+    environment:
+      - MONGO_INITDB_DATABASE=devdb
+    networks:
+      - db-network
+
+volumes:
+  dev-db-data:
+    driver: local
+
+networks:
+  db-network:
+    driver: bridge
