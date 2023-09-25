@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"forum/api/src/auth"
 	"forum/api/src/models"
+	"log"
 	"net/http"
 )
 
@@ -31,6 +33,31 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := models.UserFromRequest(&userRequest)
+	// TODO save to DB
 
-	fmt.Fprintf(w, "User: %+v", user)
+	auth := auth.AuthJWT{Request: r}
+	access_token, refresh_token, err := auth.CreateTokens(user.ID)
+
+	if err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response := models.AuthResponse{
+		AccessToken:  access_token,
+		RefreshToken: refresh_token,
+		User: models.UserResponse{
+			ID:        user.ID,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Email:     user.Email,
+		},
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

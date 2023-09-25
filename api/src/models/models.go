@@ -23,10 +23,10 @@ func UserFromRequest(ur *UserRequest) User {
 }
 
 type UserRequest struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Password  string
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 func (u *UserRequest) Exists() bool {
@@ -60,4 +60,24 @@ func (u *UserRequest) ValidateData() error {
 	} else {
 		return nil
 	}
+}
+
+type UserResponse struct {
+	ID        uuid.UUID `json:"uuid"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Email     string    `json:"email"`
+}
+
+// Tokens Response
+
+type AuthResponse struct {
+	// used in register and login endpoints
+	AccessToken  string       `json:"access_token"`
+	RefreshToken string       `json:"refresh_token"`
+	User         UserResponse `json:"user"`
+}
+
+type AccessTokenResponse struct {
+	AccessToken string `json:"access_token"`
 }
