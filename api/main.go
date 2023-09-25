@@ -2,6 +2,7 @@ package main
 
 import (
 	"forum/api/src/handlers"
+	"forum/api/src/middlewares"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,6 +11,7 @@ import (
 func main() {
 	router := mux.NewRouter()
 	router = router.PathPrefix("/api").Subrouter()
+	router.Use(middlewares.DefaultMiddleware)
 
 	// auth endpoints
 	router.HandleFunc("/register", handlers.RegisterHandler).Methods("POST")
