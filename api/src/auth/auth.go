@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"forum/api/src/config"
 	"forum/api/src/models"
 	"net/http"
 	"time"
@@ -9,19 +10,43 @@ import (
 	"github.com/google/uuid"
 )
 
-type AuthJWT struct {
-	Request     *http.Request
-	secret      []byte `default:"supersecrethere"`
-	access_exp  int    `default:"900"`
-	refresh_exp int    `default:"43200"`
+type authJWT struct {
+	request     *http.Request
+	secret      []byte
+	access_exp  int
+	refresh_exp int
 }
 
-func (a *AuthJWT) getUserID() (uuid.UUID, error) {
+func AuthJWT(req *http.Request) (*authJWT, error) {
+	secret, err := config.ConfigStr("SECRET_KEY")
+	if err != nil {
+		return nil, err
+	}
+	access_exp, err := config.ConfigInt("ACCESS_TOKEN_EXP")
+	if err != nil {
+		return nil, err
+	}
+	refresh_exp, err := config.ConfigInt("REFRESH_TOKEN_EXP")
+	if err != nil {
+		return nil, err
+	}
+
+	auth := authJWT{
+		request:     req,
+		secret:      []byte(secret),
+		access_exp:  int(access_exp),
+		refresh_exp: int(refresh_exp),
+	}
+
+	return &auth, nil
+}
+
+func (a *authJWT) getUserID() (uuid.UUID, error) {
 	// returns user based on access token
 	return uuid.New(), nil
 }
 
-func (a *AuthJWT) GetUser() (*models.User, error) {
+func (a *authJWT) GetUser() (*models.User, error) {
 
 	id, err := a.getUserID()
 	if err != nil {
@@ -35,15 +60,15 @@ func (a *AuthJWT) GetUser() (*models.User, error) {
 	return &user, nil
 }
 
-func (a *AuthJWT) VerifyAccessToken() bool {
+func (a *authJWT) VerifyAccessToken() bool {
 	return true
 }
 
-func (a *AuthJWT) VerifyRefreshToken() bool {
+func (a *authJWT) VerifyRefreshToken() bool {
 	return true
 }
 
-func (a *AuthJWT) createToken(claims *jwt.MapClaims) (string, error) {
+func (a *authJWT) createToken(claims *jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString(a.secret)
@@ -55,7 +80,7 @@ func (a *AuthJWT) createToken(claims *jwt.MapClaims) (string, error) {
 	return tokenString, nil
 }
 
-func (a *AuthJWT) CreateAccessToken(sub uuid.UUID) (string, error) {
+func (a *authJWT) CreateAccessToken(sub uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"type": "access",
 		"sub":  sub,
@@ -66,7 +91,7 @@ func (a *AuthJWT) CreateAccessToken(sub uuid.UUID) (string, error) {
 	return a.createToken(&claims)
 }
 
-func (a *AuthJWT) CreateRefreshToken(sub uuid.UUID) (string, error) {
+func (a *authJWT) CreateRefreshToken(sub uuid.UUID) (string, error) {
 	claims := jwt.MapClaims{
 		"type": "refresh",
 		"sub":  sub,
@@ -77,7 +102,7 @@ func (a *AuthJWT) CreateRefreshToken(sub uuid.UUID) (string, error) {
 	return a.createToken(&claims)
 }
 
-func (a *AuthJWT) CreateTokens(sub uuid.UUID) (string, string, error) {
+func (a *authJWT) CreateTokens(sub uuid.UUID) (string, string, error) {
 	access_token, err := a.CreateAccessToken(sub)
 	if err != nil {
 		return "", "", err

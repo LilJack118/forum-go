@@ -12,7 +12,6 @@ import (
 // Auth endpoint handlers
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-
 	var userRequest models.UserRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&userRequest); err != nil {
@@ -35,12 +34,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	user := models.UserFromRequest(&userRequest)
 	// TODO save to DB
 
-	auth := auth.AuthJWT{Request: r}
+	auth, err := auth.AuthJWT(r)
+	if err != nil {
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	access_token, refresh_token, err := auth.CreateTokens(user.ID)
 
 	if err != nil {
-		log.Fatal(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
@@ -56,8 +61,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		log.Fatal(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Print(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 }
