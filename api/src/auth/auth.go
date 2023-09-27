@@ -18,24 +18,24 @@ type authJWT struct {
 }
 
 func AuthJWT(req *http.Request) (*authJWT, error) {
-	secret, err := config.ConfigStr("SECRET_KEY")
+	secret, err := config.Config("SECRET_KEY", "string")
 	if err != nil {
 		return nil, err
 	}
-	access_exp, err := config.ConfigInt("ACCESS_TOKEN_EXP")
+	access_exp, err := config.Config("ACCESS_TOKEN_EXP", "int")
 	if err != nil {
 		return nil, err
 	}
-	refresh_exp, err := config.ConfigInt("REFRESH_TOKEN_EXP")
+	refresh_exp, err := config.Config("REFRESH_TOKEN_EXP", "int")
 	if err != nil {
 		return nil, err
 	}
 
 	auth := authJWT{
 		request:     req,
-		secret:      []byte(secret),
-		access_exp:  int(access_exp),
-		refresh_exp: int(refresh_exp),
+		secret:      []byte(secret.(string)),
+		access_exp:  int(access_exp.(int)),
+		refresh_exp: int(refresh_exp.(int)),
 	}
 
 	return &auth, nil

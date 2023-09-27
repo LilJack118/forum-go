@@ -1,33 +1,31 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
-type EnvVariable interface {
-	string | int
-}
-
-func ConfigStr(key string) (string, error) {
-	if err := godotenv.Load(".env"); err != nil {
-		return "", err
-	}
-
-	return os.Getenv(key), nil
-}
-
-func ConfigInt(key string) (int, error) {
-	if err := godotenv.Load(".env"); err != nil {
-		return 0, err
-	}
-
-	val, err := strconv.Atoi(os.Getenv(key))
+func Config(key string, t string) (interface{}, error) {
+	err := godotenv.Load(".env")
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	return val, nil
+	envVar := os.Getenv(key)
+
+	switch t {
+	case "string":
+		return envVar, nil
+	case "int":
+		envVarInt, err := strconv.Atoi(envVar)
+		if err != nil {
+			return nil, err
+		}
+		return envVarInt, nil
+	default:
+		return nil, fmt.Errorf("unsupported environment variable type: %s", t)
+	}
 }
