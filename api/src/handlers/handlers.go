@@ -12,26 +12,26 @@ import (
 // Auth endpoint handlers
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	var userRequest models.UserRequest
+	var req models.RegisterRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&userRequest); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// validate user data
-	if err := userRequest.ValidateData(); err != nil {
+	if err := req.ValidateData(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// check if account with given email already exists
-	if userRequest.Exists() {
-		http.Error(w, fmt.Sprintf("User with email %s already exists", userRequest.Email), http.StatusBadRequest)
+	if req.UserExists() {
+		http.Error(w, fmt.Sprintf("User with email %s already exists", req.Email), http.StatusBadRequest)
 		return
 	}
 
-	user := models.UserFromRequest(&userRequest)
+	user := models.UserFromRequest(&req)
 	// TODO save to DB
 
 	auth, err := auth.AuthJWT(r)
