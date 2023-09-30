@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
+	"forum/api/pkg/httpErrors"
 	"log"
 	"net/http"
 )
@@ -24,13 +25,13 @@ func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	createdUser, err := h.useCase.Register(&user)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -77,7 +78,7 @@ func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewEncoder(w).Encode(createdUser); err != nil {
 		log.Print(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 }
