@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
+	"net/http"
 )
 
 type authUseCase struct {
@@ -37,4 +39,18 @@ func (u *authUseCase) Register(user *models.User) (*models.User, error) {
 	user.CleanPassword()
 
 	return user, nil
+}
+
+func (u *authUseCase) Login(email string, password string) (*models.User, int, error) {
+	user, err := u.authRepo.GetUserByEmail(email)
+
+	if user == nil || err != nil {
+		return nil, http.StatusNotFound, fmt.Errorf("user with email %s doesn't exist", email)
+	}
+
+	if err := user.CheckPassword(password); err != nil {
+		return nil, http.StatusUnauthorized, errors.New("invalid email or password")
+	}
+
+	return user, 200, nil
 }
