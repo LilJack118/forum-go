@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -37,4 +38,19 @@ func (repo *authRepository) CreateUser(user *models.User) error {
 	}
 
 	return nil
+}
+
+func (repo *authRepository) GetUserByEmail(email string) (*models.User, error) {
+	var user *models.User
+	collection := repo.getCollection()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := collection.FindOne(ctx, bson.D{primitive.E{Key: "email", Value: email}}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

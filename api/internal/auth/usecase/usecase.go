@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
 )
@@ -14,6 +15,12 @@ func NewAuthUseCase(authRepo auth.AuthRepository) *authUseCase {
 }
 
 func (u *authUseCase) Register(user *models.User) (*models.User, error) {
+
+	existingUser, err := u.authRepo.GetUserByEmail(user.Email)
+	if existingUser != nil || err == nil {
+		return nil, fmt.Errorf("user with email %s already registered", user.Email)
+	}
+
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
