@@ -64,7 +64,7 @@ func (u *authUseCase) GenerateTokens(user *models.User) (*models.UserWithTokens,
 		return nil, err
 	}
 
-	access_token, refresh_token, err := auth_jwt.CreateTokens(user.ID)
+	access_token, refresh_token, err := auth_jwt.CreateTokens(user.ID.String())
 	if err != nil {
 		return nil, err
 	}
