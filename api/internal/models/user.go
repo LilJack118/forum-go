@@ -57,7 +57,7 @@ func (user *User) PrepareCreate() error {
 	return nil
 }
 
-type UserWithToken struct {
+type UserWithTokens struct {
 	User         *User  `json:"user"`
 	RefreshToken string `json:"refresh_token"`
 	AccessToken  string `json:"access_token"`

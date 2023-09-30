@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
+	"forum/api/pkg/utils"
 	"net/http"
 )
 
@@ -53,4 +54,24 @@ func (u *authUseCase) Login(email string, password string) (*models.User, int, e
 	}
 
 	return user, 200, nil
+}
+
+func (u *authUseCase) GenerateTokens(user *models.User) (*models.UserWithTokens, error) {
+	auth_jwt, err := utils.AuthJWT()
+	if err != nil {
+		return nil, err
+	}
+
+	access_token, refresh_token, err := auth_jwt.CreateTokens(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	user_with_tokens := &models.UserWithTokens{
+		AccessToken:  access_token,
+		RefreshToken: refresh_token,
+		User:         user,
+	}
+
+	return user_with_tokens, nil
 }

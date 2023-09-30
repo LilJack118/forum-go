@@ -35,9 +35,15 @@ func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO generate jwt tokens
+	response, err := h.useCase.GenerateTokens(createdUser)
+	if err != nil {
+		log.Print(err)
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(createdUser); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Print(err)
 		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -63,8 +69,15 @@ func (h *authHandlers) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response, err := h.useCase.GenerateTokens(user)
+	if err != nil {
+		log.Print(err)
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(user); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		log.Print(err)
 		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

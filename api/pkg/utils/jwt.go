@@ -2,8 +2,6 @@ package utils
 
 import (
 	"forum/api/config"
-	"forum/api/internal/models"
-	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,13 +9,12 @@ import (
 )
 
 type authJWT struct {
-	request     *http.Request
 	secret      []byte
 	access_exp  int
 	refresh_exp int
 }
 
-func AuthJWT(req *http.Request) (*authJWT, error) {
+func AuthJWT() (*authJWT, error) {
 	secret, err := config.Config("SECRET_KEY", "string")
 	if err != nil {
 		return nil, err
@@ -32,7 +29,6 @@ func AuthJWT(req *http.Request) (*authJWT, error) {
 	}
 
 	auth := authJWT{
-		request:     req,
 		secret:      []byte(secret.(string)),
 		access_exp:  int(access_exp.(int)),
 		refresh_exp: int(refresh_exp.(int)),
@@ -41,23 +37,9 @@ func AuthJWT(req *http.Request) (*authJWT, error) {
 	return &auth, nil
 }
 
-func (a *authJWT) getUserID() (uuid.UUID, error) {
+func (a *authJWT) GetUserID() (uuid.UUID, error) {
 	// returns user based on access token
 	return uuid.New(), nil
-}
-
-func (a *authJWT) GetUser() (*models.User, error) {
-
-	id, err := a.getUserID()
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO: get user from database
-	user := models.User{ID: id, FirstName: "John", LastName: "Doe", Email: "doe@gmail.com", Password: "hdshshsfd"}
-
-	// returns user based on access token
-	return &user, nil
 }
 
 func (a *authJWT) VerifyAccessToken() bool {

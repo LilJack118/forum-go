@@ -7,4 +7,5 @@ import (
 type AuthUseCase interface {
 	Register(user *models.User) (*models.User, error)
 	Login(email string, password string) (*models.User, int, error)
+	GenerateTokens(user *models.User) (*models.UserWithTokens, error)
 }
