@@ -53,6 +53,8 @@ func (u *authUseCase) Login(email string, password string) (*models.User, int, e
 		return nil, http.StatusUnauthorized, errors.New("invalid email or password")
 	}
 
+	user.CleanPassword()
+
 	return user, 200, nil
 }
 
