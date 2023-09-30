@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
 	"log"
@@ -22,55 +21,61 @@ func NewAuthHandler(useCase auth.AuthUseCase) *authHandlers {
 // handler functions
 
 func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
-	var req models.RegisterRequest
+	var user models.User
 
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// validate user data
-	if err := req.ValidateData(); err != nil {
+	createdUser, err := h.useCase.Register(&user)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// check if account with given email already exists
-	if req.UserExists() {
-		http.Error(w, fmt.Sprintf("User with email %s already exists", req.Email), http.StatusBadRequest)
-		return
-	}
+	// // validate user data
+	// if err := req.ValidateData(); err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
 
-	user := models.UserFromRequest(&req)
-	// TODO save to DB
+	// // check if account with given email already exists
+	// if req.UserExists() {
+	// 	http.Error(w, fmt.Sprintf("User with email %s already exists", req.Email), http.StatusBadRequest)
+	// 	return
+	// }
 
-	auth, err := auth.AuthJWT(r)
-	if err != nil {
-		log.Print(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	// user := models.UserFromRequest(&req)
+	// // TODO save to DB
 
-	access_token, refresh_token, err := auth.CreateTokens(user.ID)
+	// auth, err := auth.AuthJWT(r)
+	// if err != nil {
+	// 	log.Print(err)
+	// 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	if err != nil {
-		log.Print(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
+	// access_token, refresh_token, err := auth.CreateTokens(user.ID)
 
-	response := models.AuthResponse{
-		AccessToken:  access_token,
-		RefreshToken: refresh_token,
-		User: models.UserResponse{
-			ID:        user.ID,
-			FirstName: user.FirstName,
-			LastName:  user.LastName,
-			Email:     user.Email,
-		},
-	}
+	// if err != nil {
+	// 	log.Print(err)
+	// 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	if err := json.NewEncoder(w).Encode(response); err != nil {
+	// response := models.AuthResponse{
+	// 	AccessToken:  access_token,
+	// 	RefreshToken: refresh_token,
+	// 	User: models.UserResponse{
+	// 		ID:        user.ID,
+	// 		FirstName: user.FirstName,
+	// 		LastName:  user.LastName,
+	// 		Email:     user.Email,
+	// 	},
+	// }
+
+	if err := json.NewEncoder(w).Encode(createdUser); err != nil {
 		log.Print(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
