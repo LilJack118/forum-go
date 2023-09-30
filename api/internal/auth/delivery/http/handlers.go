@@ -1,17 +1,27 @@
-package handlers
+package http
 
 import (
 	"encoding/json"
 	"fmt"
-	"forum/api/src/auth"
-	"forum/api/src/models"
+	"forum/api/internal/auth"
+	"forum/api/internal/models"
 	"log"
 	"net/http"
 )
 
-// Auth endpoint handlers
+type authHandlers struct {
+	useCase auth.AuthUseCase
+}
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+func NewAuthHandler(useCase auth.AuthUseCase) *authHandlers {
+	return &authHandlers{
+		useCase: useCase,
+	}
+}
+
+// handler functions
+
+func (h *authHandlers) Register(w http.ResponseWriter, r *http.Request) {
 	var req models.RegisterRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {

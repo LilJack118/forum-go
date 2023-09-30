@@ -9,14 +9,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type User struct {
-	ID           uuid.UUID
-	FirstName    string
-	LastName     string
-	Email        string
-	PasswordHash string
-}
-
 func UserFromRequest(req *RegisterRequest) User {
 	u := User{uuid.New(), req.FirstName, req.LastName, req.Email, req.Password}
 	return u
@@ -60,6 +52,20 @@ func (req *RegisterRequest) ValidateData() error {
 	} else {
 		return nil
 	}
+}
+
+type User struct {
+	ID        uuid.UUID `json:"user_id" db:"user_id" validate:"omitempty"`
+	FirstName string    `json:"first_name" db:"first_name" validate:"required,lte=30"`
+	LastName  string    `json:"last_name" db:"last_name" validate:"required,lte=30"`
+	Email     string    `json:"email" db:"email" validate:"omitempty,lte=60,email"`
+	Password  string    `json:"password" db:"password" validate:"omitempty,required,gte=6"`
+}
+
+type UserWithToken struct {
+	User         *User  `json:"user"`
+	RefreshToken string `json:"refresh_token"`
+	AccessToken  string `json:"access_token"`
 }
 
 type UserResponse struct {

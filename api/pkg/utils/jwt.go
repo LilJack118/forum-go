@@ -1,8 +1,8 @@
-package auth
+package utils
 
 import (
-	"forum/api/src/config"
-	"forum/api/src/models"
+	"forum/api/config"
+	"forum/api/internal/models"
 	"net/http"
 	"time"
 
@@ -54,7 +54,7 @@ func (a *authJWT) GetUser() (*models.User, error) {
 	}
 
 	// TODO: get user from database
-	user := models.User{ID: id, FirstName: "John", LastName: "Doe", Email: "doe@gmail.com", PasswordHash: "hdshshsfd"}
+	user := models.User{ID: id, FirstName: "John", LastName: "Doe", Email: "doe@gmail.com", Password: "hdshshsfd"}
 
 	// returns user based on access token
 	return &user, nil

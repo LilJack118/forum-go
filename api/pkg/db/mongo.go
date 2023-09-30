@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
-	"forum/api/src/config"
+	"forum/api/config"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,7 +13,7 @@ import (
 
 var MongoClient *mongo.Client
 
-func InitMongoClient() error {
+func InitMongoClient() (*mongo.Client, error) {
 	fmt.Println("Connection to db")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -23,15 +23,14 @@ func InitMongoClient() error {
 	dbPort, _ := config.Config("DB_PORT", "string")
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s", dbHost, dbPort)))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	fmt.Println("Successfully connected to database")
-	MongoClient = client
-	return nil
+	return client, nil
 }
