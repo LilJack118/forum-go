@@ -11,9 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var MongoClient *mongo.Client
-
-func InitMongoClient() (*mongo.Client, error) {
+func InitMongoClient() (*mongo.Database, error) {
 	fmt.Println("Connection to db")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -31,6 +29,12 @@ func InitMongoClient() (*mongo.Client, error) {
 		return nil, err
 	}
 
+	dbName, err := config.Config("DB_NAME", "string")
+	if err != nil {
+		return nil, err
+	}
+
+	db_client := client.Database(dbName.(string))
 	fmt.Println("Successfully connected to database")
-	return client, nil
+	return db_client, nil
 }

@@ -1,11 +1,20 @@
 package repository
 
-import "go.mongodb.org/mongo-driver/mongo"
+import (
+	"forum/api/internal/models"
+
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 type authRepository struct {
-	db *mongo.Client
+	db *mongo.Database
 }
 
-func NewAuthRepository(db *mongo.Client) *authRepository {
+func NewAuthRepository(db *mongo.Database) *authRepository {
 	return &authRepository{db}
+}
+
+func (repo *authRepository) CreateUser(user *models.User) error {
+
+	return nil
 }

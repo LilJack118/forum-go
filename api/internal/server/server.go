@@ -20,11 +20,11 @@ import (
 // Server struct
 type Server struct {
 	httpServer *http.Server
-	db         *mongo.Client
+	db         *mongo.Database
 }
 
 // NewServer New Server constructor
-func NewServer(db *mongo.Client) *Server {
+func NewServer(db *mongo.Database) *Server {
 	return &Server{db: db}
 }
 

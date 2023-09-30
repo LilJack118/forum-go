@@ -20,6 +20,10 @@ func (user *User) Validate() error {
 	return validator.ValidateStruct(user)
 }
 
+func (user *User) CleanPassword() {
+	user.Password = ""
+}
+
 func (user *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {

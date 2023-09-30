@@ -6,11 +6,11 @@ import (
 )
 
 type authUseCase struct {
-	authRepo *auth.AuthRepository
+	authRepo auth.AuthRepository
 }
 
 func NewAuthUseCase(authRepo auth.AuthRepository) *authUseCase {
-	return &authUseCase{authRepo: &authRepo}
+	return &authUseCase{authRepo: authRepo}
 }
 
 func (u *authUseCase) Register(user *models.User) (*models.User, error) {
@@ -22,7 +22,12 @@ func (u *authUseCase) Register(user *models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	// hash password
+	// save to db
+	if err := u.authRepo.CreateUser(user); err != nil {
+		return nil, err
+	}
+
+	user.CleanPassword()
 
 	return user, nil
 }
