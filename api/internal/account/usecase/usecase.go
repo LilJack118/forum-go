@@ -25,3 +25,7 @@ func (u *accountUseCase) GetUserAccount(id string) (*models.User, int, error) {
 	user.CleanPassword()
 	return user, 0, nil
 }
+
+func (u *accountUseCase) UpdateUserAccount(id string, fields *models.UserEditableFields) (int, error) {
+	return u.accountrepo.UpdateUserAccount(id, fields)
+}

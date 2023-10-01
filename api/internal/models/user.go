@@ -57,6 +57,15 @@ func (user *User) PrepareCreate() error {
 	return nil
 }
 
+type UserEditableFields struct {
+	FirstName string `json:"first_name" bson:"first_name" validate:"required,alphanum,lte=30"`
+	LastName  string `json:"last_name" bson:"last_name" validate:"required,alphanum,lte=30"`
+}
+
+func (user *UserEditableFields) Validate() error {
+	return validator.ValidateStruct(user)
+}
+
 type UserWithTokens struct {
 	User         *User  `json:"user"`
 	RefreshToken string `json:"refresh_token"`
