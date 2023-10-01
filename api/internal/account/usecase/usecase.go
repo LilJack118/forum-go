@@ -29,3 +29,7 @@ func (u *accountUseCase) GetUserAccount(id string) (*models.User, int, error) {
 func (u *accountUseCase) UpdateUserAccount(id string, fields *models.UserEditableFields) (int, error) {
 	return u.accountrepo.UpdateUserAccount(id, fields)
 }
+
+func (u *accountUseCase) DeleteUserAccount(id string) (int, error) {
+	return u.accountrepo.DeleteUserAccount(id)
+}

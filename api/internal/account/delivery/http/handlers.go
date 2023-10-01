@@ -56,5 +56,12 @@ func (h *accountHandlers) Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *accountHandlers) Delete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["uid"]
 
+	code, err := h.uc.DeleteUserAccount(id)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), code)
+		return
+	}
 }

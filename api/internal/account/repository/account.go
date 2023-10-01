@@ -64,3 +64,27 @@ func (repo *accountRepository) UpdateUserAccount(id string, fields *models.UserE
 
 	return 0, nil
 }
+
+func (repo *accountRepository) DeleteUserAccount(id string) (int, error) {
+
+	collection := repo.getCollection()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	uid, err := uuid.Parse(id)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	result, err := collection.DeleteOne(ctx, bson.D{primitive.E{Key: "id", Value: uid}})
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	if result.DeletedCount == 0 {
+		return http.StatusNotFound, errors.New("user with specified id does not exist")
+	}
+
+	return 0, nil
+}
