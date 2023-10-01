@@ -1,8 +1,14 @@
 package http
 
 import (
+	"encoding/json"
+	"fmt"
+	"forum/api/internal/models"
 	"forum/api/internal/posts"
+	"forum/api/pkg/httpErrors"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type postHandlers struct {
@@ -14,7 +20,25 @@ func NewPostHandlers(uc posts.PostsUseCase) *postHandlers {
 }
 
 func (h *postHandlers) CreatePost(w http.ResponseWriter, r *http.Request) {
+	var newPost models.Post
 
+	vars := mux.Vars(r)
+
+	if err := json.NewDecoder(r.Body).Decode(&newPost); err != nil {
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	newPost.SetUID(vars["uid"])
+
+	fmt.Println(newPost)
+
+	_, code, err := h.uc.CreatePost(&newPost)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), code)
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *postHandlers) GetPost(w http.ResponseWriter, r *http.Request) {
