@@ -99,3 +99,33 @@ func (repo *postsRepository) UpdatePost(id_s string, uid_s string, fields *model
 	return 0, nil
 
 }
+
+func (repo *postsRepository) DeletePost(id_s string, uid_s string) (int, error) {
+	id, err := uuid.Parse(id_s)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	uid, err := uuid.Parse(uid_s)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	collection := repo.getCollection()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.D{primitive.E{Key: "id", Value: id}, primitive.E{Key: "uid", Value: uid}}
+	result, err := collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	if result.DeletedCount == 0 {
+		return http.StatusNotFound, errors.New("post with specified id and user id does not exist")
+	}
+
+	return 0, nil
+
+}

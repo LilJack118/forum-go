@@ -77,7 +77,15 @@ func (h *postHandlers) UpdatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) DeletePost(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
 
+	code, err := h.uc.DeletePost(vars["id"], vars["uid"])
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), code)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *postHandlers) ListPosts(w http.ResponseWriter, r *http.Request) {

@@ -38,3 +38,7 @@ func (uc *postsUseCase) GetPost(id string) (*models.Post, int, error) {
 func (uc *postsUseCase) UpdatePost(id string, uid string, fields *models.PostEditableFields) (int, error) {
 	return uc.repo.UpdatePost(id, uid, fields)
 }
+
+func (uc *postsUseCase) DeletePost(id string, uid string) (int, error) {
+	return uc.repo.DeletePost(id, uid)
+}
