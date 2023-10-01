@@ -2,10 +2,10 @@ package http
 
 import (
 	"encoding/json"
-	"fmt"
 	"forum/api/internal/models"
 	"forum/api/internal/posts"
 	"forum/api/pkg/httpErrors"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -31,8 +31,6 @@ func (h *postHandlers) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	newPost.SetUID(vars["uid"])
 
-	fmt.Println(newPost)
-
 	_, code, err := h.uc.CreatePost(&newPost)
 	if err != nil {
 		httpErrors.JSONError(w, err.Error(), code)
@@ -42,7 +40,19 @@ func (h *postHandlers) CreatePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) GetPost(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	post_id := vars["id"]
 
+	post, code, err := h.uc.GetPost(post_id)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), code)
+	}
+
+	if err := json.NewEncoder(w).Encode(post); err != nil {
+		log.Print(err)
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *postHandlers) UpdatePost(w http.ResponseWriter, r *http.Request) {

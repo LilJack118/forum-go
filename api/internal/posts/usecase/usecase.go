@@ -28,3 +28,7 @@ func (uc *postsUseCase) CreatePost(post *models.Post) (*models.PostWithoutConten
 
 	return &post.PostWithoutContent, 0, nil
 }
+
+func (uc *postsUseCase) GetPost(id string) (*models.Post, int, error) {
+	return uc.repo.GetPost(id)
+}
