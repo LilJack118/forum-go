@@ -14,6 +14,9 @@ import (
 	authhttp "forum/api/internal/auth/delivery/http"
 	authrepo "forum/api/internal/auth/repository"
 	authuc "forum/api/internal/auth/usecase"
+	postshttp "forum/api/internal/posts/delivery/http"
+	postsrepo "forum/api/internal/posts/repository"
+	postsuc "forum/api/internal/posts/usecase"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -37,10 +40,12 @@ func (s *Server) Run(port string) error {
 
 	// init repositiories
 	auth_repo := authrepo.NewAuthRepository(s.db)
+	posts_repo := postsrepo.NewPostsRepository(s.db)
 
 	// init use cases
 	auth_uc := authuc.NewAuthUseCase(auth_repo)
 	account_uc := accountuc.NewAccountUseCase(auth_repo)
+	posts_uc := postsuc.NewPostsUseCase(posts_repo)
 
 	// register routes
 	auth_router := router.PathPrefix("/auth").Subrouter()
@@ -48,7 +53,9 @@ func (s *Server) Run(port string) error {
 
 	api_router := router.PathPrefix("/api").Subrouter()
 	api_router.Use(middleware.AuthJWTMiddleware)
+
 	accounthttp.RegisterAccountRoutes(api_router, account_uc)
+	postshttp.RegisterPostHandlers(api_router, posts_uc)
 
 	s.httpServer = &http.Server{
 		Addr:         ":" + port,
