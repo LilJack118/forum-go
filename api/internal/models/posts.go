@@ -67,3 +67,10 @@ type PostEditableFields struct {
 func (pe *PostEditableFields) Validate() error {
 	return validator.ValidateStruct(pe)
 }
+
+type PostsPage struct {
+	Page     int     `json:"page" bson:"page"`
+	Limit    int     `json:"limit" bson:"limit"`
+	PostsNum int     `json:"posts_num" bson:"posts_num"`
+	Posts    *[]Post `json:"posts" bson:"posts"`
+}

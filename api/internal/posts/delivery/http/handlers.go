@@ -89,7 +89,24 @@ func (h *postHandlers) DeletePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) ListPosts(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 
+	if page == "" || limit == "" {
+		httpErrors.JSONError(w, "please specify page and limit parameters", http.StatusBadRequest)
+		return
+	}
+
+	response, err := h.uc.ListPosts(page, limit)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *postHandlers) ListMyPosts(w http.ResponseWriter, r *http.Request) {

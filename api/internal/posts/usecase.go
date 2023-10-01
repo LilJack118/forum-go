@@ -7,4 +7,5 @@ type PostsUseCase interface {
 	GetPost(id string) (*models.Post, int, error)
 	UpdatePost(id string, uid string, fields *models.PostEditableFields) (int, error)
 	DeletePost(id string, uid string) (int, error)
+	ListPosts(pageS string, limitS string) (*models.PostsPage, error)
 }
