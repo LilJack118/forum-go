@@ -34,6 +34,7 @@ func NewServer(db *mongo.Database) *Server {
 func (s *Server) Run(port string) error {
 
 	router := mux.NewRouter()
+	router.Use(middleware.DefaultMiddleware)
 
 	// init repositiories
 	auth_repo := authrepo.NewAuthRepository(s.db)
@@ -45,11 +46,10 @@ func (s *Server) Run(port string) error {
 
 	// register routes
 	auth_router := router.PathPrefix("/auth").Subrouter()
-	auth_router.Use(middleware.DefaultMiddleware)
 	authhttp.RegisterAuthRoutes(auth_router, auth_uc)
 
 	api_router := router.PathPrefix("/api").Subrouter()
-	api_router.Use(middleware.DefaultMiddleware)
+	api_router.Use(middleware.AuthJWTMiddleware)
 	accounthttp.RegisterAccountRoutes(api_router, account_uc)
 
 	s.httpServer = &http.Server{

@@ -9,5 +9,5 @@ import (
 func RegisterAccountRoutes(r *mux.Router, u account.AccountUseCase) {
 	handler := NewAccountHandlers(u)
 
-	r.HandleFunc("/account/{id}", handler.Get).Methods("GET")
+	r.HandleFunc("/account", handler.Get).Methods("GET")
 }

@@ -20,7 +20,7 @@ func NewAccountHandlers(u account.AccountUseCase) *accountHandlers {
 
 func (h *accountHandlers) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
+	id := vars["uid"]
 
 	account, code, err := h.uc.GetUserAccount(id)
 	if err != nil {
