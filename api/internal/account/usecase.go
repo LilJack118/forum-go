@@ -1,3 +1,7 @@
 package account
 
-type AccountUseCase interface{}
+import "forum/api/internal/models"
+
+type AccountUseCase interface {
+	GetUserAccount(id string) (*models.User, int, error)
+}

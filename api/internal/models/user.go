@@ -9,7 +9,7 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"user_id" bson:"user_id" validate:"omitempty"`
+	ID        uuid.UUID `json:"id" bson:"id" validate:"omitempty"`
 	FirstName string    `json:"first_name" bson:"first_name" validate:"required,alphanum,lte=30"`
 	LastName  string    `json:"last_name" bson:"last_name" validate:"required,alphanum,lte=30"`
 	Email     string    `json:"email" bson:"email" validate:"omitempty,lte=60,email"`

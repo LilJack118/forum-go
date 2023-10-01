@@ -41,7 +41,7 @@ func (s *Server) Run(port string) error {
 
 	// init use cases
 	auth_uc := authuc.NewAuthUseCase(auth_repo)
-	account_uc := accountuc.NewAccountUseCase(account_repo)
+	account_uc := accountuc.NewAccountUseCase(auth_repo, account_repo)
 
 	// register routes
 	auth_router := router.PathPrefix("/auth").Subrouter()

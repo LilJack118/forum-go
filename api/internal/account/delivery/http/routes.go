@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"forum/api/internal/account"
 
 	"github.com/gorilla/mux"
@@ -10,5 +9,5 @@ import (
 func RegisterAccountRoutes(r *mux.Router, u account.AccountUseCase) {
 	handler := NewAccountHandlers(u)
 
-	fmt.Println(handler)
+	r.HandleFunc("/account/{id}", handler.Get).Methods("GET")
 }

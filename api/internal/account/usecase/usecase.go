@@ -1,11 +1,27 @@
 package usecase
 
-import "forum/api/internal/account"
+import (
+	"forum/api/internal/account"
+	"forum/api/internal/auth"
+	"forum/api/internal/models"
+	"net/http"
+)
 
 type accountUseCase struct {
-	repo account.AccountRepository
+	authrepo    auth.AuthRepository
+	accountrepo account.AccountRepository
 }
 
-func NewAccountUseCase(repo account.AccountRepository) *accountUseCase {
-	return &accountUseCase{repo}
+func NewAccountUseCase(authrepo auth.AuthRepository, accountrepo account.AccountRepository) *accountUseCase {
+	return &accountUseCase{authrepo, accountrepo}
+}
+
+func (u *accountUseCase) GetUserAccount(id string) (*models.User, int, error) {
+
+	user, err := u.authrepo.GetUserByID(id)
+	if err != nil {
+		return nil, http.StatusNotFound, err
+	}
+	user.CleanPassword()
+	return user, 0, nil
 }
