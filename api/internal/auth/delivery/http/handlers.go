@@ -14,7 +14,7 @@ type authHandlers struct {
 	useCase auth.AuthUseCase
 }
 
-func NewAuthHandler(useCase auth.AuthUseCase) *authHandlers {
+func NewAuthHandlers(useCase auth.AuthUseCase) *authHandlers {
 	return &authHandlers{
 		useCase: useCase,
 	}
