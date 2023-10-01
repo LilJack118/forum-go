@@ -1,19 +1,17 @@
 package usecase
 
 import (
-	"forum/api/internal/account"
 	"forum/api/internal/auth"
 	"forum/api/internal/models"
 	"net/http"
 )
 
 type accountUseCase struct {
-	authrepo    auth.AuthRepository
-	accountrepo account.AccountRepository
+	authrepo auth.AuthRepository
 }
 
-func NewAccountUseCase(authrepo auth.AuthRepository, accountrepo account.AccountRepository) *accountUseCase {
-	return &accountUseCase{authrepo, accountrepo}
+func NewAccountUseCase(authrepo auth.AuthRepository) *accountUseCase {
+	return &accountUseCase{authrepo}
 }
 
 func (u *accountUseCase) GetUserAccount(id string) (*models.User, int, error) {
@@ -27,9 +25,9 @@ func (u *accountUseCase) GetUserAccount(id string) (*models.User, int, error) {
 }
 
 func (u *accountUseCase) UpdateUserAccount(id string, fields *models.UserEditableFields) (int, error) {
-	return u.accountrepo.UpdateUserAccount(id, fields)
+	return u.authrepo.UpdateUser(id, fields)
 }
 
 func (u *accountUseCase) DeleteUserAccount(id string) (int, error) {
-	return u.accountrepo.DeleteUserAccount(id)
+	return u.authrepo.DeleteUser(id)
 }

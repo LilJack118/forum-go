@@ -10,7 +10,6 @@ import (
 	"time"
 
 	accounthttp "forum/api/internal/account/delivery/http"
-	accountrepo "forum/api/internal/account/repository"
 	accountuc "forum/api/internal/account/usecase"
 	authhttp "forum/api/internal/auth/delivery/http"
 	authrepo "forum/api/internal/auth/repository"
@@ -38,11 +37,10 @@ func (s *Server) Run(port string) error {
 
 	// init repositiories
 	auth_repo := authrepo.NewAuthRepository(s.db)
-	account_repo := accountrepo.NewAccountRepository(s.db)
 
 	// init use cases
 	auth_uc := authuc.NewAuthUseCase(auth_repo)
-	account_uc := accountuc.NewAccountUseCase(auth_repo, account_repo)
+	account_uc := accountuc.NewAccountUseCase(auth_repo)
 
 	// register routes
 	auth_router := router.PathPrefix("/auth").Subrouter()
