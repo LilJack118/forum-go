@@ -60,7 +60,20 @@ func (h *postHandlers) GetPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) UpdatePost(w http.ResponseWriter, r *http.Request) {
+	var input models.PostEditableFields
 
+	vars := mux.Vars(r)
+
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	code, err := h.uc.UpdatePost(vars["id"], vars["uid"], &input)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), code)
+		return
+	}
 }
 
 func (h *postHandlers) DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -68,5 +81,9 @@ func (h *postHandlers) DeletePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) ListPosts(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (h *postHandlers) ListMyPosts(w http.ResponseWriter, r *http.Request) {
 
 }

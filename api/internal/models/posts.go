@@ -58,3 +58,12 @@ type PostWithoutContent struct {
 	Title    string    `json:"title" bson:"title" validate:"required,lte=300"`
 	CreateAt time.Time `json:"created_at" bson:"created_at" validate:"omitempty"`
 }
+
+type PostEditableFields struct {
+	Title   string `json:"title" bson:"title" validate:"required,lte=300"`
+	Content string `json:"content" bson:"content" validate:"required,lte=10000"`
+}
+
+func (pe *PostEditableFields) Validate() error {
+	return validator.ValidateStruct(pe)
+}

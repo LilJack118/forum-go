@@ -34,3 +34,7 @@ func (uc *postsUseCase) CreatePost(post *models.Post) (*models.PostWithoutConten
 func (uc *postsUseCase) GetPost(id string) (*models.Post, int, error) {
 	return uc.repo.GetPost(id)
 }
+
+func (uc *postsUseCase) UpdatePost(id string, uid string, fields *models.PostEditableFields) (int, error) {
+	return uc.repo.UpdatePost(id, uid, fields)
+}

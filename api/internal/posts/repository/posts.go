@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"forum/api/internal/models"
 	"net/http"
 	"time"
@@ -60,4 +61,45 @@ func (repo *postsRepository) GetPost(id string) (*models.Post, int, error) {
 	}
 
 	return post, 0, nil
+}
+
+func (repo *postsRepository) UpdatePost(id_s string, uid_s string, fields *models.PostEditableFields) (int, error) {
+	id, err := uuid.Parse(id_s)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	uid, err := uuid.Parse(uid_s)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	collection := repo.getCollection()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	bfields, err := bson.Marshal(fields)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	var updateFields bson.M
+	if err := bson.Unmarshal(bfields, &updateFields); err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	filter := bson.D{primitive.E{Key: "id", Value: id}, primitive.E{Key: "uid", Value: uid}}
+	update := bson.D{primitive.E{Key: "$set", Value: updateFields}}
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	if result.MatchedCount == 0 {
+		return http.StatusNotFound, errors.New("post with specified id and user id does not exist")
+	}
+
+	return 0, nil
+
 }

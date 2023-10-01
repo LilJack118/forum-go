@@ -14,4 +14,5 @@ func RegisterPostHandlers(r *mux.Router, u posts.PostsUseCase) {
 	r.HandleFunc("/post/{id}", handler.UpdatePost).Methods("PATCH")
 	r.HandleFunc("/post/{id}", handler.DeletePost).Methods("DELETE")
 	r.HandleFunc("/posts", handler.ListPosts).Methods("GET")
+	r.HandleFunc("/posts/my", handler.ListMyPosts).Methods("GET")
 }
