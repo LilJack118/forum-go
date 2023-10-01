@@ -26,7 +26,9 @@ func (uc *postsUseCase) CreatePost(post *models.Post) (*models.PostWithoutConten
 		return nil, http.StatusBadRequest, err
 	}
 
-	return &post.PostWithoutContent, 0, nil
+	createdPost, _ := post.WithoutContent()
+
+	return createdPost, 0, nil
 }
 
 func (uc *postsUseCase) GetPost(id string) (*models.Post, int, error) {

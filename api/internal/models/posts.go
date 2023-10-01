@@ -9,8 +9,11 @@ import (
 )
 
 type Post struct {
-	PostWithoutContent
-	Content string `json:"content" bson:"content" validate:"required,lte=10000"`
+	ID       uuid.UUID `json:"id" bson:"id" validate:"omitempty"`
+	UID      uuid.UUID `json:"uid" bson:"uid" validate:"required"`
+	Title    string    `json:"title" bson:"title" validate:"required,lte=300"`
+	Content  string    `json:"content" bson:"content" validate:"required,lte=10000"`
+	CreateAt time.Time `json:"created_at" bson:"created_at" validate:"omitempty"`
 }
 
 func (post *Post) Validate() error {
@@ -33,6 +36,20 @@ func (post *Post) SetUID(uidString string) error {
 
 	post.UID = uid
 	return nil
+}
+
+func (post *Post) WithoutContent() (*PostWithoutContent, error) {
+	if err := post.Validate(); err != nil {
+		return nil, err
+	}
+
+	p := &PostWithoutContent{
+		ID:       post.ID,
+		UID:      post.UID,
+		Title:    post.Title,
+		CreateAt: post.CreateAt,
+	}
+	return p, nil
 }
 
 type PostWithoutContent struct {

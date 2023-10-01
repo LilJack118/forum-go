@@ -51,11 +51,10 @@ func (repo *postsRepository) GetPost(id string) (*models.Post, int, error) {
 	var post *models.Post
 	collection := repo.getCollection()
 
-	filter := bson.D{primitive.E{Key: "id", Value: post_id}}
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	filter := bson.D{primitive.E{Key: "id", Value: post_id}}
 	if err := collection.FindOne(ctx, filter).Decode(&post); err != nil {
 		return nil, http.StatusBadRequest, err
 	}

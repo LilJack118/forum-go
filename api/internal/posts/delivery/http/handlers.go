@@ -31,12 +31,16 @@ func (h *postHandlers) CreatePost(w http.ResponseWriter, r *http.Request) {
 
 	newPost.SetUID(vars["uid"])
 
-	_, code, err := h.uc.CreatePost(&newPost)
+	newPostResponse, code, err := h.uc.CreatePost(&newPost)
 	if err != nil {
 		httpErrors.JSONError(w, err.Error(), code)
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	if err := json.NewEncoder(w).Encode(newPostResponse); err != nil {
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (h *postHandlers) GetPost(w http.ResponseWriter, r *http.Request) {
