@@ -112,7 +112,7 @@ func (a *authJWT) CreateRefreshToken(sub string) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   sub,
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(a.access_exp))),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(a.refresh_exp))),
 		},
 	}
 
