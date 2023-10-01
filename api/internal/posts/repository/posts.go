@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"forum/api/internal/models"
+	"forum/api/pkg/utils"
 	"net/http"
 	"time"
 
@@ -79,18 +80,13 @@ func (repo *postsRepository) UpdatePost(id_s string, uid_s string, fields *model
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	bfields, err := bson.Marshal(fields)
+	bfields, err := utils.StructToBson(fields)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
 
-	var updateFields bson.M
-	if err := bson.Unmarshal(bfields, &updateFields); err != nil {
-		return http.StatusBadRequest, err
-	}
-
 	filter := bson.D{primitive.E{Key: "id", Value: id}, primitive.E{Key: "uid", Value: uid}}
-	update := bson.D{primitive.E{Key: "$set", Value: updateFields}}
+	update := bson.D{primitive.E{Key: "$set", Value: bfields}}
 	result, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return http.StatusBadRequest, err
