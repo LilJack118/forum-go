@@ -169,8 +169,7 @@ func (repo *postsRepository) getPosts(filter bson.D, opts *options.FindOptions) 
 }
 
 func (repo *postsRepository) ListPosts(page int, limit int) (*models.PostsPage, error) {
-	opts := options.Find()
-	// .SetSort(primitive.E{Key: "created_at", Value: -1})
+	opts := options.Find().SetSort(primitive.E{Key: "created_at", Value: -1})
 	repo.applyPagination(page, limit, opts)
 
 	posts, err := repo.getPosts(bson.D{}, opts)
