@@ -3,8 +3,8 @@ package usecase
 import (
 	"forum/api/internal/models"
 	"forum/api/internal/posts"
+	"forum/api/pkg/utils"
 	"net/http"
-	"strconv"
 )
 
 type postsUseCase struct {
@@ -45,15 +45,8 @@ func (uc *postsUseCase) DeletePost(id string, uid string) (int, error) {
 }
 
 func (uc *postsUseCase) ListPosts(pageS string, limitS string) (*models.PostsPage, error) {
-	page, err := strconv.Atoi(pageS)
-	if err != nil {
-		return nil, err
-	}
-
-	limit, err := strconv.Atoi(limitS)
-	if err != nil {
-		return nil, err
-	}
+	page, _ := utils.StringToIntWithDefault(pageS, 1)
+	limit, _ := utils.StringToIntWithDefault(limitS, 1)
 
 	return uc.repo.ListPosts(page, limit)
 }

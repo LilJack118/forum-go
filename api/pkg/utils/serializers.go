@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"strconv"
+
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -16,4 +18,13 @@ func StructToBson(s interface{}) (*bson.M, error) {
 	}
 
 	return &bsonS, nil
+}
+
+func StringToIntWithDefault(s string, def int) (int, error) {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		return def, err
+	}
+
+	return i, nil
 }
