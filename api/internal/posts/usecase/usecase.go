@@ -5,6 +5,8 @@ import (
 	"forum/api/internal/posts"
 	"forum/api/pkg/utils"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 type postsUseCase struct {
@@ -49,4 +51,16 @@ func (uc *postsUseCase) ListPosts(pageS string, limitS string) (*models.PostsPag
 	limit, _ := utils.StringToIntWithDefault(limitS, 1)
 
 	return uc.repo.ListPosts(page, limit)
+}
+
+func (uc *postsUseCase) ListUserPosts(uid string, pageS string, limitS string) (*models.PostsPage, error) {
+	page, _ := utils.StringToIntWithDefault(pageS, 1)
+	limit, _ := utils.StringToIntWithDefault(limitS, 1)
+
+	u_uid, err := uuid.Parse(uid)
+	if err != nil {
+		return nil, err
+	}
+
+	return uc.repo.ListUserPosts(u_uid, page, limit)
 }

@@ -105,5 +105,18 @@ func (h *postHandlers) ListPosts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *postHandlers) ListMyPosts(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
 
+	response, err := h.uc.ListUserPosts(vars["uid"], page, limit)
+	if err != nil {
+		httpErrors.JSONError(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		httpErrors.JSONError(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }

@@ -168,16 +168,16 @@ func (repo *postsRepository) getPosts(filter bson.D, opts *options.FindOptions) 
 	return &results, nil
 }
 
-func (repo *postsRepository) ListPosts(page int, limit int) (*models.PostsPage, error) {
+func (repo *postsRepository) listUsersWithFilter(filter bson.D, page int, limit int) (*models.PostsPage, error) {
 	opts := options.Find().SetSort(bson.D{primitive.E{Key: "created_at", Value: -1}})
 	repo.applyPagination(page, limit, opts)
 
-	posts, err := repo.getPosts(bson.D{}, opts)
+	posts, err := repo.getPosts(filter, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	postsNum, err := repo.countPosts(bson.D{})
+	postsNum, err := repo.countPosts(filter)
 	if err != nil {
 		return nil, err
 	}
@@ -190,4 +190,13 @@ func (repo *postsRepository) ListPosts(page int, limit int) (*models.PostsPage, 
 	}
 
 	return postsPage, nil
+}
+
+func (repo *postsRepository) ListPosts(page int, limit int) (*models.PostsPage, error) {
+	return repo.listUsersWithFilter(bson.D{}, page, limit)
+}
+
+func (repo *postsRepository) ListUserPosts(uid uuid.UUID, page int, limit int) (*models.PostsPage, error) {
+	filter := bson.D{primitive.E{Key: "uid", Value: uid}}
+	return repo.listUsersWithFilter(filter, page, limit)
 }
