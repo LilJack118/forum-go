@@ -104,7 +104,7 @@ func (h *authHandlers) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	auth_jwt, _ := utils.AuthJWT()
 	_, claims, err := auth_jwt.VerifyRefreshToken(input.RefreshToken)
 	if err != nil {
-		httpErrors.JSONError(w, err.Error(), http.StatusForbidden)
+		httpErrors.JSONError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
