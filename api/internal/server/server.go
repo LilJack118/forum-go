@@ -2,11 +2,13 @@ package server
 
 import (
 	"context"
+	"forum/api/config"
 	"forum/api/internal/middleware"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	accounthttp "forum/api/internal/account/delivery/http"
@@ -19,6 +21,7 @@ import (
 	postsuc "forum/api/internal/posts/usecase"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -57,9 +60,20 @@ func (s *Server) Run(port string) error {
 	accounthttp.RegisterAccountRoutes(api_router, account_uc)
 	postshttp.RegisterPostHandlers(api_router, posts_uc)
 
+	originsStr, _ := config.Config("ALLOWED_ORIGINS", "string")
+	origins := strings.Split(originsStr.(string), ",")
+	// set cors
+	c := cors.New(cors.Options{
+		AllowedOrigins: origins,
+		AllowedHeaders: []string{"*"},
+		Debug:          true,
+	})
+
+	handler := c.Handler(router)
+
 	s.httpServer = &http.Server{
 		Addr:         ":" + port,
-		Handler:      router,
+		Handler:      handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
