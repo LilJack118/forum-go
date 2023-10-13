@@ -52,7 +52,11 @@ func (s *Server) Run(port string) error {
 
 	// register routes
 	auth_router := router.PathPrefix("/auth").Subrouter()
-	authhttp.RegisterAuthRoutes(auth_router, auth_uc)
+	authhttp.RegisterAuthNotProtectedRoutes(auth_router, auth_uc)
+
+	auth_protected_router := router.PathPrefix("/auth").Subrouter()
+	auth_protected_router.Use(middleware.AuthJWTMiddleware)
+	authhttp.RegisterAuthProtectedRoutes(auth_protected_router, auth_uc)
 
 	api_router := router.PathPrefix("/api").Subrouter()
 	api_router.Use(middleware.AuthJWTMiddleware)

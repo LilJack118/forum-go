@@ -123,3 +123,7 @@ func (h *authHandlers) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (h *authHandlers) VerifyToken(w http.ResponseWriter, r *http.Request) {
+
+}
