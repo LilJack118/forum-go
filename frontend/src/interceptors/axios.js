@@ -2,7 +2,6 @@ import axios from 'axios';
 import store from '../store/index.js';
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL;
-console.log(axios.defaults.baseURL)
 // if access token in local storage use it as default authorization header
 if (localStorage.getItem("access_token")){
     axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token")}`;

@@ -9,8 +9,10 @@
     </div>
 
     <form v-on:submit.prevent="submitLogin" method="POST">
-        <MDBInput type="email" label="Email address" id="form1Email" v-model="userData.email" wrapperClass="mb-4" />
-        <MDBInput type="password" label="Password" id="form1Password" v-model="userData.password" wrapperClass="mb-4" />
+        <MDBInput type="email" label="Email address" id="form1Email" v-model="userData.email" wrapperClass="mb-4"
+            required />
+        <MDBInput type="password" label="Password" id="form1Password" v-model="userData.password" wrapperClass="mb-4"
+            required />
 
         <MDBBtn color="primary" type="submit" block>Login</MDBBtn>
     </form>
