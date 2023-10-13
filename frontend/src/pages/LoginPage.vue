@@ -80,6 +80,10 @@ export default {
             // set tokens and user data in local storage
             this.$store.dispatch("setAuthData", { "data": res.data });
             this.cleanUserData();
+            // redirect to feed page
+            this.$router.push({
+                name: "feed"
+            })
         },
         handleRequestError(err) {
             if (err.response.data.detail) {
