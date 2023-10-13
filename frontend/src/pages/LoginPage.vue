@@ -82,9 +82,8 @@ export default {
             this.cleanUserData();
         },
         handleRequestError(err) {
-            console.log(err.response)
-            if (err.response.detail) {
-                this.errorMsg = err.response.detail;
+            if (err.response.data.detail) {
+                this.errorMsg = err.response.data.detail;
             } else {
                 this.errorMsg = "Try again later";
             }
