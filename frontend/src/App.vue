@@ -8,7 +8,10 @@
 
 export default {
   name: 'App',
-  components: {}
+  components: {},
+  mounted() {
+    this.$store.dispatch("setUser", { "user": JSON.parse(localStorage.getItem("user")) })
+  },
 }
 </script>
 

@@ -14,31 +14,37 @@ import NotFoundPage from './pages/NotFoundPage.vue';
 const routes = [
   {
     path: '/',
+    meta:{requiresAuthentication:true},
     name: 'feed',
     component: FeedPage
   },
   {
     path: '/posts/:id',
+    meta:{requiresAuthentication:true},
     name: 'post-page',
     component: PostPage
   },
   {
     path: '/posts/:id/edit',
+    meta:{requiresAuthentication:true},
     name: 'post-page-edit',
     component: EditPostPage
   },
   {
     path: '/posts/create',
+    meta:{requiresAuthentication:true},
     name: 'post-page-create',
     component: CreatePostPage
   },
   {
     path: '/login',
+    meta:{requiresGuest:true},
     name: 'LoginPage',
     component: LoginPage
   },
   {
     path: '/register',
+    meta:{requiresGuest:true},
     name: 'RegisterPage',
     component: RegisterPage
   },
@@ -54,6 +60,39 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+
+router.beforeEach((to, from, next) => {
+  function checkPermissions(){
+    const requiresGuest = to.matched.some((x) => x.meta.requiresGuest);
+    const requiresAuthentication = to.matched.some((x) => x.meta.requiresAuthentication)
+    const isLoggedin = store.getters["getUser"] !== null;
+
+    if (requiresGuest && isLoggedin) {
+      next("/");
+    } else if(requiresAuthentication && !isLoggedin) {
+      next("/login");
+    } else {
+      next();
+    }
+  };
+
+  // if token is invalid and refresh token is expired, user
+  // credentials will be set to null
+  if (localStorage.getItem("access_token") || localStorage.getItem("refresh_token")){
+    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token")}`;
+    axios.get("auth/token/verify")
+    .then(response => {
+      checkPermissions();
+    }).catch(error => {
+      checkPermissions();
+    })
+  }else{
+    checkPermissions();
+  }
+
+});
+
 
 
 export default router
