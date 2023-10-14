@@ -13,11 +13,11 @@
         <!-- Tabs content -->
         <MDBTabContent class="mt-4">
             <MDBTabPane tabId="all-posts">
-                <PostsList></PostsList>
+                <PostsList load="all" :active="activeTab == 'all-posts'"></PostsList>
             </MDBTabPane>
 
             <MDBTabPane tabId="my-posts">
-                <PostsList></PostsList>
+                <PostsList load="my" :active="activeTab == 'my-posts'"></PostsList>
             </MDBTabPane>
         </MDBTabContent>
     </MDBTabs>

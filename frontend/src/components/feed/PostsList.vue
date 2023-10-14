@@ -1,6 +1,4 @@
 <template>
-    Posts List
-
     <div class="mt-2 mb-5">
         <div v-for="post in posts" class="post my-3 card" v-on:click="openPost(post.id)">
             <div class="card-body text-start">
@@ -16,6 +14,7 @@ import axios from 'axios';
 
 export default {
     name: 'PostsList',
+    props: ['load', 'active'],
     components: {},
     data() {
         return {
@@ -27,15 +26,17 @@ export default {
         }
     },
     mounted() {
+        console.log("MOUNT")
         this.loadPosts();
         window.addEventListener("scroll", this.handleScroll)
     },
     unmounted() {
+        console.log("UNMOUNT")
         window.removeEventListener("scroll", this.handleScroll)
     },
     methods: {
         handleScroll(event) {
-            if (this.loading == true || this.loadedAll == true) return;
+            if (!this.active || this.loading || this.loadedAll) return;
 
             let scrollHeight = Math.max(
                 document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -53,7 +54,8 @@ export default {
             this.loading = true;
 
             try {
-                let res = await axios.get(`api/posts?page=${this.page}&limit=${this.limit}`);
+                let endpoint = this.load == 'all' ? 'api/posts' : 'api/posts/my';
+                let res = await axios.get(`${endpoint}?page=${this.page}&limit=${this.limit}`);
                 if (res.status != 200) {
                     console.log(res);
                 } else {
