@@ -82,7 +82,7 @@ export default {
             this.$router.push({ name: 'post-page', params: { id: id } })
         },
         editPost(id) {
-
+            this.$router.push({ name: 'post-page-edit', params: { id: id } })
         },
         async deletePost(id) {
             if (!window.confirm("Are you sure you want to delete this post")) return;
