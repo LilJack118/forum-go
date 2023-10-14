@@ -31,7 +31,7 @@ import {
     MDBTabItem,
     MDBTabPane,
 } from 'mdb-vue-ui-kit';
-import { PostsList } from '../components/feed/PostsList.vue'
+import PostsList from '../components/feed/PostsList.vue'
 import { ref } from 'vue';
 
 export default {

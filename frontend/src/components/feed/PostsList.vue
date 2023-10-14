@@ -17,20 +17,29 @@ export default {
     components: {},
     data() {
         return {
-            posts_num: 0,
+            pageData: {},
+        }
+    },
+    mounted() {
+        this.loadPosts(this.page, this.limit);
+    },
+    methods: {
+        async loadPosts(page, limit) {
+            let res = await axios.get(`api/posts?page=${page}&limit=${limit}`);
+            if (res.status != 200) {
+                console.log(res);
+            } else {
+                this.pageData = res.data;
+            }
         }
     },
     computed: {
-        async posts() {
-            let res = await axios.get(`api/posts?page=${this.page}&limit=${this.limit}`);
-            if (res.statusCode != 200) {
-                console.log(res);
+        posts() {
+            if (this.pageData.posts) {
+                return this.pageData.posts
+            } else {
                 return []
             }
-
-
-            return []
-
         }
     }
 }
