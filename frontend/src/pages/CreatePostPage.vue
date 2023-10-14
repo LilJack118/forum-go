@@ -14,9 +14,20 @@
 </template>
   
 <script>
+import {
+    MDBInput,
+    MDBBtn,
+    MDBTextarea
+} from "mdb-vue-ui-kit";
+import axios from 'axios';
+
 export default {
     name: 'CreatePostPage',
-    components: {},
+    components: {
+        MDBInput,
+        MDBBtn,
+        MDBTextarea
+    },
     data() {
         return {
             post: reactive({
