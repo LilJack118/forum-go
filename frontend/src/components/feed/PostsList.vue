@@ -4,6 +4,7 @@
             <div class="card-body text-start">
                 <h5 class="card-title fw-bold">{{ post.title }}</h5>
                 <p class="card-text">{{ post.content }}</p>
+                <p class="p-0 m-0" style="font-size: 10px">{{ post.created_at }}</p>
             </div>
         </div>
     </div>

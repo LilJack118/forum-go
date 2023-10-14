@@ -1,12 +1,13 @@
 <template>
     <h1 class="fw-bold">{{ post.title }}</h1>
-    <p class="">{{ post.created_at }}</p>
+    <p class="">Created {{ formatTimestamp(post.created_at) }}</p>
     <hr>
     <p>{{ post.content }}</p>
 </template>
   
 <script>
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
     name: 'PostPage',
@@ -33,6 +34,9 @@ export default {
                 console.log(error)
             }
 
+        },
+        formatTimestamp(timestamp) {
+            return moment(timestamp).fromNow()
         }
     }
 }
