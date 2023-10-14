@@ -10,8 +10,8 @@
                 </div>
             </div>
             <div v-if="load == 'my'" class="my-auto">
-                <button class="btn btn-sm bg-primary mb-2 text-white fw-bold">Edit</button>
-                <button class="btn btn-sm bg-danger text-white fw-bold">Delete</button>
+                <button v-on:click="editPost(post.id)" class="btn btn-sm bg-primary mb-2 text-white fw-bold">Edit</button>
+                <button v-on:click="deletePost(post.id)" class="btn btn-sm bg-danger text-white fw-bold">Delete</button>
             </div>
         </div>
     </div>
@@ -80,6 +80,25 @@ export default {
         },
         openPost(id) {
             this.$router.push({ name: 'post-page', params: { id: id } })
+        },
+        editPost(id) {
+
+        },
+        async deletePost(id) {
+            if (!window.confirm("Are you sure you want to delete this post")) return;
+
+            try {
+                let res = await axios.delete(`api/post/${id}`);
+                if (res.status != 204) {
+                    console.log(res);
+                } else {
+                    window.alert("Successfully deleted post");
+                    this.posts = this.posts.filter(p => p.id != id);
+                }
+            } catch (error) {
+                window.alert("There was an error loading the post")
+                console.log(error)
+            }
         },
     },
 }
