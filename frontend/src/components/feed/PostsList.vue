@@ -1,10 +1,17 @@
 <template>
     <div class="mt-2 mb-5">
-        <div v-for="post in posts" class="post my-3 card" v-on:click="openPost(post.id)">
-            <div class="card-body text-start">
-                <h5 class="card-title fw-bold">{{ post.title }}</h5>
-                <p class="card-text">{{ post.content }}</p>
-                <p class="p-0 m-0" style="font-size: 10px">{{ post.created_at }}</p>
+        <div class="d-flex" v-for="post in posts">
+            <div class="post my-3 card w-100" v-on:click="openPost(post.id)">
+                <div class="card-body text-start">
+                    <h5 class="card-title fw-bold">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content }}</p>
+                    <p class="p-0 m-0" style="font-size: 10px">{{ post.created_at }}</p>
+
+                </div>
+            </div>
+            <div v-if="load == 'my'" class="my-auto">
+                <button class="btn btn-sm bg-primary mb-2 text-white fw-bold">Edit</button>
+                <button class="btn btn-sm bg-danger text-white fw-bold">Delete</button>
             </div>
         </div>
     </div>
