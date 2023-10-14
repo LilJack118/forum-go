@@ -26,12 +26,10 @@ export default {
         }
     },
     mounted() {
-        console.log("MOUNT")
         this.loadPosts();
         window.addEventListener("scroll", this.handleScroll)
     },
     unmounted() {
-        console.log("UNMOUNT")
         window.removeEventListener("scroll", this.handleScroll)
     },
     methods: {
