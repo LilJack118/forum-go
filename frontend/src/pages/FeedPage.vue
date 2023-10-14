@@ -13,11 +13,11 @@
         <!-- Tabs content -->
         <MDBTabContent class="mt-4">
             <MDBTabPane tabId="all-posts">
-                All Posts
+                <PostsList :page="allPostsPage" :limit="12"></PostsList>
             </MDBTabPane>
 
             <MDBTabPane tabId="my-posts">
-                My Posts
+                <PostsList :page="myPostsPage" :limit="12"></PostsList>
             </MDBTabPane>
         </MDBTabContent>
     </MDBTabs>
@@ -31,6 +31,7 @@ import {
     MDBTabItem,
     MDBTabPane,
 } from 'mdb-vue-ui-kit';
+import { PostsList } from '../components/feed/PostsList.vue'
 import { ref } from 'vue';
 
 export default {
@@ -41,10 +42,13 @@ export default {
         MDBTabContent,
         MDBTabItem,
         MDBTabPane,
+        PostsList
     },
     data() {
         return {
-            activeTab: ref('all-posts')
+            activeTab: ref('all-posts'),
+            allPostsPage: 1,
+            myPostsPage: 1,
         }
     }
 }

@@ -22,14 +22,10 @@ axios.interceptors.response.use(resp => {
     // after every request if error occurs check if status code is 401,
     // if so try to refresh access token
     if (error.response.status === 401 && !refresh && localStorage.getItem("refresh_token")){
-        const {status, data}  = await axios.post('auth/token/refresh/', {}, 
-        {
-            headers:{
-                Authorization: `Bearer ${localStorage.getItem("refresh_token") || "invalid"}`
-            },
-            withCredentials: true
-        });
         refresh = true;
+        const {status, data}  = await axios.post('auth/token/refresh', {
+            "refresh_token": localStorage.getItem("refresh_token") || "invalid"
+        });
         
         if (status === 200){
             localStorage.setItem('access_token', data.access_token);
