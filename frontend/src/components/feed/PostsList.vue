@@ -1,8 +1,8 @@
 <template>
     Posts List
 
-    <div>
-        <div v-for="post in posts" class="post card" v-on:click="openPost(post.id)">
+    <div class="mt-2 mb-5">
+        <div v-for="post in posts" class="post my-3 card" v-on:click="openPost(post.id)">
             <div class="card-body text-start">
                 <h5 class="card-title fw-bold">{{ post.title }}</h5>
                 <p class="card-text">{{ post.content }}</p>
@@ -13,40 +13,75 @@
   
 <script>
 import axios from 'axios';
+import { reactive } from 'vue';
 
 export default {
     name: 'PostsList',
-    properties: ["page", "limit"],
     components: {},
     data() {
         return {
-            pageData: {},
+            page: 1,
+            limit: 12,
+            posts_num: 0,
+            loading: false,
+            posts: [],
         }
     },
     mounted() {
-        this.loadPosts(this.page, this.limit);
+        this.loadPosts();
+        window.addEventListener("scroll", this.handleScroll)
     },
-    computed: {
-        posts() {
-            if (this.pageData.posts) {
-                return this.pageData.posts
-            } else {
-                return []
-            }
-        }
+    unmounted() {
+        window.removeEventListener("scroll", this.handleScroll)
     },
+    // computed: {
+    //     posts() {
+    //         if (this.pageData.posts) {
+    //             return this.pageData.posts
+    //         } else {
+    //             return []
+    //         }
+    //     }
+    // },
     methods: {
-        async loadPosts(page, limit) {
-            let res = await axios.get(`api/posts?page=${page}&limit=${limit}`);
-            if (res.status != 200) {
-                console.log(res);
-            } else {
-                this.pageData = res.data;
+        handleScroll(event) {
+            if (this.loading == true) return;
+
+            let scrollHeight = Math.max(
+                document.body.scrollHeight, document.documentElement.scrollHeight,
+                document.body.offsetHeight, document.documentElement.offsetHeight,
+                document.body.clientHeight, document.documentElement.clientHeight
+            );
+            let currentScroll = window.scrollY + window.innerHeight;
+
+            let modifier = 300; // at 300 px from bottom start loading next page
+            if (currentScroll + modifier > scrollHeight) {
+                this.loadPosts();
             }
+        },
+        async loadPosts() {
+            this.loading = true;
+
+            try {
+                let res = await axios.get(`api/posts?page=${this.page}&limit=${this.limit}`);
+                if (res.status != 200) {
+                    console.log(res);
+                } else {
+                    if (res.data.posts != null) {
+                        this.posts.push(...res.data.posts);
+                        this.page += 1;
+                        this.posts_num += res.data.posts.length;
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+
+            this.loading = false;
         },
         openPost(id) {
             this.$router.push({ name: 'post-page', params: { id: id } })
-        }
+        },
     },
 }
 </script>

@@ -13,11 +13,11 @@
         <!-- Tabs content -->
         <MDBTabContent class="mt-4">
             <MDBTabPane tabId="all-posts">
-                <PostsList :page="allPostsPage" :limit="12"></PostsList>
+                <PostsList></PostsList>
             </MDBTabPane>
 
             <MDBTabPane tabId="my-posts">
-                <PostsList :page="myPostsPage" :limit="12"></PostsList>
+                <PostsList></PostsList>
             </MDBTabPane>
         </MDBTabContent>
     </MDBTabs>
