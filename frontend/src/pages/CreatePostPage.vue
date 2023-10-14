@@ -2,14 +2,14 @@
     <h1>Create Post</h1>
     <hr>
 
-    <form>
+    <form v-on:submit.prevent="createPost" method="POST">
         <!-- Name input -->
         <MDBInput type="text" label="title" id="title" v-model="post.title" wrapperClass="mb-4" />
 
         <!-- Message input -->
         <MDBTextarea label="Content" id="content" v-model="post.content" wrapperClass="mb-4" />
         <!-- Submit button -->
-        <MDBBtn color="primary" block class="mb-4"> Create </MDBBtn>
+        <MDBBtn type="submit" color="primary" block class="mb-4"> Create </MDBBtn>
     </form>
 </template>
   
@@ -20,6 +20,7 @@ import {
     MDBTextarea
 } from "mdb-vue-ui-kit";
 import axios from 'axios';
+import { reactive } from 'vue';
 
 export default {
     name: 'CreatePostPage',
@@ -50,12 +51,15 @@ export default {
         handleAuthSuccess(res) {
             window.alert("Successfully created new post!")
             this.cleanPostData();
+            this.$router.push({ name: "feed" })
         },
         handleRequestError(err) {
+            let errorMsg;
+
             if (err.response.data.detail) {
-                let errorMsg = err.response.data.detail;
+                errorMsg = err.response.data.detail;
             } else {
-                let errorMsg = "Try again later";
+                errorMsg = "Try again later";
             }
 
             window.alert(errorMsg);
