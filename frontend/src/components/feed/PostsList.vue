@@ -13,7 +13,6 @@
   
 <script>
 import axios from 'axios';
-import { reactive } from 'vue';
 
 export default {
     name: 'PostsList',
@@ -22,7 +21,7 @@ export default {
         return {
             page: 1,
             limit: 12,
-            posts_num: 0,
+            loadedAll: false,
             loading: false,
             posts: [],
         }
@@ -34,18 +33,9 @@ export default {
     unmounted() {
         window.removeEventListener("scroll", this.handleScroll)
     },
-    // computed: {
-    //     posts() {
-    //         if (this.pageData.posts) {
-    //             return this.pageData.posts
-    //         } else {
-    //             return []
-    //         }
-    //     }
-    // },
     methods: {
         handleScroll(event) {
-            if (this.loading == true) return;
+            if (this.loading == true || this.loadedAll == true) return;
 
             let scrollHeight = Math.max(
                 document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -70,7 +60,8 @@ export default {
                     if (res.data.posts != null) {
                         this.posts.push(...res.data.posts);
                         this.page += 1;
-                        this.posts_num += res.data.posts.length;
+                    } else {
+                        this.loadedAll = true;
                     }
                 }
             } catch (error) {
