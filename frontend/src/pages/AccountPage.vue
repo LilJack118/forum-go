@@ -11,7 +11,7 @@
 
         <!-- Submit button -->
         <MDBBtn type="submit" color="primary" block class="mb-4"> Update </MDBBtn>
-        <MDBBtn type="button" color="danger" block class="mb-4"> Delete </MDBBtn>
+        <MDBBtn type="button" v-on:click="deleteAccount" color="danger" block class="mb-4"> Delete </MDBBtn>
     </form>
 </template>
   
@@ -70,6 +70,8 @@ export default {
                 })
         },
         deleteAccount() {
+            if (!window.confirm("Are you sure you want to delete this account? All data will be lost.")) return;
+
             axios.delete('api/account')
                 .then(res => {
                     window.alert("Successfully deleted account")
