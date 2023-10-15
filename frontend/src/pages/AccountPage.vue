@@ -7,7 +7,7 @@
         <MDBInput type="text" label="Last Name" id="last_name" v-model="user.last_name" wrapperClass="mb-4" />
 
         <!-- Message input -->
-        <MDBInput type="email" label="Email" id="email" v-model="user.email" wrapperClass="mb-4" aria-disabled />
+        <MDBInput type="email" label="Email" id="email" v-model="user.email" wrapperClass="mb-4" disabled />
 
         <!-- Submit button -->
         <MDBBtn type="submit" color="primary" block class="mb-4"> Update </MDBBtn>
