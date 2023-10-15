@@ -7,6 +7,7 @@ import FeedPage from './pages/FeedPage.vue';
 import PostPage from './pages/PostPage.vue';
 import EditPostPage from './pages/EditPostPage.vue';
 import CreatePostPage from './pages/CreatePostPage.vue';
+import AccountPage from './pages/AccountPage.vue';
 import LoginPage from './pages/LoginPage.vue';
 import RegisterPage from './pages/RegisterPage.vue';
 import NotFoundPage from './pages/NotFoundPage.vue';
@@ -35,6 +36,12 @@ const routes = [
     meta:{requiresAuthentication:true},
     name: 'post-page-create',
     component: CreatePostPage
+  },
+  {
+    path: '/account',
+    meta:{requiresAuthentication:true},
+    name: 'AccountPage',
+    component: AccountPage
   },
   {
     path: '/login',
