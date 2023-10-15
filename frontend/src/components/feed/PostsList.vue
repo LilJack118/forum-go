@@ -1,6 +1,6 @@
 <template>
     <div class="mt-2 mb-5">
-        <div class="d-flex" v-for="post in posts">
+        <div v-if="posts.length > 0" class="d-flex" v-for="post in posts">
             <div class="post my-3 card w-100" v-on:click="openPost(post.id)">
                 <div class="card-body text-start">
                     <h5 class="card-title fw-bold">{{ post.title }}</h5>
@@ -13,6 +13,9 @@
                 <button v-on:click="editPost(post.id)" class="btn btn-sm bg-primary mb-2 text-white fw-bold">Edit</button>
                 <button v-on:click="deletePost(post.id)" class="btn btn-sm bg-danger text-white fw-bold">Delete</button>
             </div>
+        </div>
+        <div v-else>
+            <h4>There are no posts yet</h4>
         </div>
     </div>
 </template>

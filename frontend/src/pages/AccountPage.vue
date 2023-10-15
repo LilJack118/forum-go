@@ -74,8 +74,9 @@ export default {
 
             axios.delete('api/account')
                 .then(res => {
-                    window.alert("Successfully deleted account")
-                    this.$store.dispatch("resetUserData")
+                    window.alert("Successfully deleted account");
+                    this.$store.dispatch("resetUserData");
+                    location.reload();
                 })
                 .catch(err => {
                     this.handleRequestError(err);
