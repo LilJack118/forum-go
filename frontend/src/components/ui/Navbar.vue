@@ -9,6 +9,7 @@
         <router-link to="/account" class="fw-bold">
             <MDBBtn size="sm" class="bg-primary text-white"> Account </MDBBtn>
         </router-link>
+        <MDBBtn size="sm" v-on:click="logout" class="bg-primary text-white"> LogOut </MDBBtn>
     </MDBNavbar>
 </template>
 
@@ -25,6 +26,14 @@ export default {
         MDBNavbar,
         MDBBtn
     },
+    methods: {
+        logout() {
+            if (!window.confirm("Are you sure you want to log out")) return;
+
+            this.$store.dispatch("resetUserData");
+            location.reload();
+        }
+    }
 }
 </script>
 
