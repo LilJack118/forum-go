@@ -70,6 +70,7 @@ func (s *Server) Run(port string) error {
 	c := cors.New(cors.Options{
 		AllowedOrigins: origins,
 		AllowedHeaders: []string{"*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"},
 		Debug:          true,
 	})
 
