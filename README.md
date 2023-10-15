@@ -1,6 +1,8 @@
 ## Forum written in Go and Vue
 Allows users to create account, read and create posts.
 
+![gif](images/preview.gif)
+
 ### ENDPOINTS:
 - AUTH:
 	- /register
