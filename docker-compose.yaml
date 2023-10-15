@@ -21,7 +21,7 @@ services:
       context: ./api
     # map local port 8000 to port 8000 in container
     ports:
-      - "80:80"
+      - "8000:8000"
     # map directory from system to docker container
     volumes:
       # - "./api:/api"
